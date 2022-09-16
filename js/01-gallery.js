@@ -25,10 +25,26 @@ function selectedImage(e) {
         return;
     }
     const imgLink = e.target.dataset.source;
-    const instance = basicLightbox.create(`<img src="${imgLink}">`);
+    const instance = basicLightbox.create(`<img src="${imgLink}">`, {
+        onShow: onModalShow,
+        onClose: onModalClose,
+    });
     instance.show();
 
-    document.addEventListener('keydown', e => {
-        if (e.key === 'Escape') instance.close();
-    });
+    function onModalShow() {
+        window.addEventListener('keydown', onEscKeyPress);
+    }
+
+    function onModalClose() {
+        window.removeEventListener('keydown', onEscKeyPress);
+    }
+
+    function onEscKeyPress(event) {
+        const ESC_KEY_CODE = 'Escape';
+        const isEscKey = event.code === ESC_KEY_CODE;
+
+        if (isEscKey) {
+            instance.close();
+        }
+    }
 }
